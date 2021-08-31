@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prefix.html">Prefix</a></li><li class="chapter-item expanded affix "><li class="part-title">Humanoid</li><li class="chapter-item expanded "><a href="HumanoidAvatar.html"><strong aria-hidden="true">1.</strong> HumanoidAvatar</a></li><li class="chapter-item expanded affix "><li class="part-title">Editor</li><li class="chapter-item expanded "><a href="Editor/Inspector.html"><strong aria-hidden="true">2.</strong> Inspector</a></li><li class="chapter-item expanded "><a href="Editor/Layout.html"><strong aria-hidden="true">3.</strong> Layout</a></li><li class="chapter-item expanded "><a href="Editor/SerializedObject.html"><strong aria-hidden="true">4.</strong> SerializedObject</a></li><li class="chapter-item expanded "><a href="Editor/ReorderableList.html"><strong aria-hidden="true">5.</strong> ReorderableList</a></li><li class="chapter-item expanded "><a href="Editor/Asset.html"><strong aria-hidden="true">6.</strong> Asset</a></li><li class="chapter-item expanded "><a href="Editor/ScriptedImporter.html"><strong aria-hidden="true">7.</strong> ScriptedImporter</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -118,7 +118,10 @@
                                                 <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                                                                        
+                                                                        <a href="https://github.com/ousttrue/unity_book/tree/master" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                
                     </div>
                 </div>
 
@@ -144,7 +147,145 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="chapter-1"><a class="header" href="#chapter-1">Chapter 1</a></h1>
+                        <h1 id="prefix"><a class="header" href="#prefix">Prefix</a></h1>
+<p>Unity に関するメモ書き。</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="humanoidavatar"><a class="header" href="#humanoidavatar">HumanoidAvatar</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="inspector"><a class="header" href="#inspector">Inspector</a></h1>
+<h2 id="customeditor"><a class="header" href="#customeditor">CustomEditor</a></h2>
+<pre><code class="language-cs">using UnityEngine;
+using UnityEditor;
+
+[CustomEditor (typeof(Character))]
+public class CharacterInspector : Editor
+{
+    Character character = null;
+
+    void OnEnable ()
+    {
+        //Character コンポーネントを取得
+        character = (Character) target;
+    }
+
+    public override void OnInspectorGUI ()
+    {
+        base.OnInspectorGUI ();
+
+        //攻撃力の数値をラベルとして表示する
+        EditorGUILayout.LabelField (&quot;攻撃力&quot;, character.攻撃力.ToString ());
+    }
+}
+</code></pre>
+<h2 id="text"><a class="header" href="#text">text</a></h2>
+<pre><code class="language-cs">public override bool HasPreviewGUI()
+{
+    return true;
+    //return Application.isPlaying;
+}
+
+public override GUIContent GetPreviewTitle()
+{
+    return new GUIContent(&quot;Title&quot;);
+}
+
+public override string GetInfoString()
+{
+    return &quot;Status&quot;;
+}
+</code></pre>
+<h2 id="sample"><a class="header" href="#sample">sample</a></h2>
+<pre><code class="language-cs">public override bool HasPreviewGUI()
+{
+    return Application.isPlaying; // Editor時だと表示が乱れる？
+}
+
+public override GUIContent GetPreviewTitle ()
+{
+    return new GUIContent (&quot;プレビュー名&quot;);
+}
+
+public override void OnPreviewSettings ()
+{
+    GUIStyle preLabel = new GUIStyle (&quot;preLabel&quot;);
+    GUIStyle preButton = new GUIStyle (&quot;preButton&quot;);
+
+    GUILayout.Label (&quot;ラベル&quot;, preLabel);
+    GUILayout.Button (&quot;ボタン&quot;, preButton);
+}
+
+public override void OnPreviewGUI (Rect r, GUIStyle background)
+{
+    GUI.Box (r, &quot;Preview&quot;);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="layout"><a class="header" href="#layout">Layout</a></h1>
+<pre><code class="language-cs">var r = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(EditorGUIUtility.singleLineHeight * 3 + 20));
+</code></pre>
+<pre><code class="language-cs">Rect r = EditorGUILayout.GetControlRect ();
+</code></pre>
+<h2 id="beginend"><a class="header" href="#beginend">begin/end</a></h2>
+<pre><code class="language-cs">using (new GUILayout.VerticalScope(GUI.skin.box))
+{
+    GUILayout.Button(&quot;Click me&quot;);
+    GUILayout.Button(&quot;Or me&quot;);
+} 
+</code></pre>
+<pre><code class="language-cs">GUILayout.BeginArea(new Rect(16,16,300,300));
+GUILayout.Label(title, guiSkin.label);
+GUILayout.Label (&quot;Time : &quot;+lapseTime.ToString(&quot;0.0&quot;), guiSkin.label);
+GUILayout.HorizontalSlider(70,0,100);
+GUILayout.Button (&quot;Click!&quot;, guiSkin.button);
+GUILayout.EndArea();
+</code></pre>
+<pre><code class="language-cs">EditorGUILayout.BeginHorizontal();
+chara.hp        = EditorGUILayout.IntField( chara.hp, GUILayout.Width(48) );
+chara.maxHp     = EditorGUILayout.IntField( chara.maxHp, GUILayout.Width(48) );
+EditorGUILayout.EndHorizontal();
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="serializedobject"><a class="header" href="#serializedobject">SerializedObject</a></h1>
+<pre><code class="language-cs">using UnityEngine;
+using UnityEditor;
+
+[CustomEditor (typeof(Character))]
+public class CharacterInspector : Editor
+{
+    SerializedProperty hpProperty;
+
+    void OnEnable ()
+    {
+        hpProperty = serializedObject.FindProperty (&quot;hp&quot;);
+    }
+
+    public override void OnInspectorGUI ()
+    {
+        serializedObject.Update ();
+
+        EditorGUILayout.IntSlider (hpProperty, 0, 100);
+
+        serializedObject.ApplyModifiedProperties ();
+    }
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="reorderablelist"><a class="header" href="#reorderablelist">ReorderableList</a></h1>
+<ul>
+<li><a href="https://qiita.com/OKsaiyowa/items/91b45916c4902a9b2394">【Unity(C#)】便利なReorderableListをスニペット機能でより便利に - Qiita</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asset"><a class="header" href="#asset">Asset</a></h1>
+<pre><code class="language-cs">AssetDatabase.StartAssetEditing ();
+foreach (var sound in sounds) {     
+    var path = AssetDatabase.GetAssetPath (sound);     
+    var audioImporter = AudioImporter.GetAtPath (path) as AudioImporter;     
+    if (audioImporter){     
+        audioImporter.threeD = false;    
+        //AssetDatabase.ImportAsset(path);
+        EditorUtility.SetDirty(sound);
+    }
+}
+AssetDatabase.StopAssetEditing ();
+
+// import dirty objects 
+AssetDatabase.Refresh();
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="scriptedimporter"><a class="header" href="#scriptedimporter">ScriptedImporter</a></h1>
 
                     </main>
 
