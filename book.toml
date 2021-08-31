@@ -3,3 +3,8 @@ authors = ["ousttrue"]
 language = "en"
 multilingual = false
 src = "src"
+
+[output.html]
+site-url = "https://ousttrue.github.io/unity_book/"
+git-repository-url = "https://github.com/ousttrue/unity_book/tree/master"
+edit-url-template = "https://github.com/ousttrue/unity_book/edit/master/{path}"
